@@ -1,1 +1,39 @@
+name: Build Push Docker Image QA
 
+# Trigger manual
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    # Variables de entorno
+    env:
+      SSH_PRIVATE_KEY: ${{ secrets.PEM_FILE }}
+      REMOTE_USER: ec2-user
+      REMOTE_HOST: ${{ vars.PUBLIC_IP_EC2_DEV }}
+      GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+      APP_NAME: app.js
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Install Docker in EC2
+      - name: Install Docker
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ env.REMOTE_HOST }}
+          username: ${{ env.REMOTE_USER }}
+          key: ${{ env.SSH_PRIVATE_KEY }}
+          script: |
+            sudo apt-get update
+            sudo apt-get install docker.io -y
+            sudo systemctl start docker
+            sudo docker run hello-world
+            docker ps
+            sudo chmod 666 /var/run/docker.sock
+            sudo systemctl enable docker
+            docker --version
+           
