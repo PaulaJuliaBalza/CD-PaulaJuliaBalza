@@ -1,6 +1,6 @@
 name: Build Push Docker Image QA
 
-# Trigger manual
+# Trigger manual workflow_dispatch
 on:
   workflow_dispatch:
 
