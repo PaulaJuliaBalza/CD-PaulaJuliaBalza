@@ -1,8 +1,14 @@
 name: Build Push Docker Image QA
 
 # Trigger manual workflow_dispatch
+#on:
+  #workflow_dispatch:
+
+# Trigger
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - VENTAS-QA-pjb
 
 jobs:
   build:
